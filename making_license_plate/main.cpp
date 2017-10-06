@@ -2,10 +2,12 @@
 #include <string>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 using namespace std;
-const int max_num = 10;
-const int max_char = 33;
+const int max_num = 1;
+const int max_char = 1;
 const string type = ".jpg";
 const string plate = "plate";
 const string character[33] = { "beo", "bo", "bu", "da", "deo", "do",  
@@ -17,6 +19,9 @@ const string number[10] = { "zero", "one", "two", "three", "four", "five",
 
 const int char_x[7] = { 127,285,443,716,874,1033,1192 };
 const int char_y = 40;
+cv::Size plate_size = cv::Size(172, 37);
+int plate_x = 264;
+int plate_y = 305;
 int main()
 {
 	string directory = "../no1/";
@@ -26,9 +31,13 @@ int main()
 	string temp_char = directory + character[0] + type;
 	string temp_num = directory + number[0] + type;
 	
+
 	cv::Mat image = cv::imread(temp_plate);
 	cv::Mat logo_char = cv::imread(temp_char);
 	cv::Mat logo_num = cv::imread(temp_num);
+
+	string car = "../car.jpg";
+	cv::Mat car_image = cv::imread(car);
 
 	for (int a = 0; a < max_num; a++) {
 		temp_num = directory + number[a] + type;
@@ -73,8 +82,15 @@ int main()
 								cv::imshow("aaa", image);
 								cout << result_name << endl;
 								//cv::imwrite("abc.jpg", image);
+
+								cv::Mat dst;
+								cv::resize(image, dst, plate_size, 0, 0);
+								imageROI = car_image(cv::Rect(plate_x, plate_y, dst.cols, dst.rows));
+								cv::addWeighted(imageROI, 0.0, dst, 1.0, 0., imageROI);
+
 								const char * imagefile = result_name.c_str();
-								cvSaveImage(imagefile, &(IplImage(image)));
+								//cvSaveImage(imagefile, &(IplImage(image)));
+								cvSaveImage(imagefile, &(IplImage(car_image)));
 								cout << a << b << c << d << e << f << g << "번째" << endl;
 							
 							}
