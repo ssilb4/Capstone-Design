@@ -10,11 +10,14 @@
 #include <vector> 
 #include <cstdio>
 #include <opencv2\opencv.hpp>
+#include <iomanip>
+#include <chrono>
+#include <random>
 
 using namespace std;
 using namespace cv;
 
 void makexml(string folder, string filename, string imgtype, string name, int width, int height, int xmin, int xmax, int ymin, int ymax);
-Mat alpha(Mat foreground, Mat background, Mat alpha);
+Mat alpha(Mat foreground, Mat background, Mat alpha, int location[]);
 Mat gaussian(Mat inputImg);
-Mat argument(Mat input, int x[], int y[]);
+Mat argument(Mat input, int x[], int y[], int result_x[], int result_y[]);
