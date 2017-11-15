@@ -1,7 +1,7 @@
 #include "makexml.h"
 
 
-Mat alpha(Mat foreground, Mat background, Mat alpha) {
+Mat alpha(Mat foreground, Mat background, Mat alpha, int location[]) {
 	// Read the images
 
 	Mat ouImage = Mat::zeros(foreground.size(), foreground.type());
@@ -9,7 +9,7 @@ Mat alpha(Mat foreground, Mat background, Mat alpha) {
 
 	bitwise_and(alpha, foreground, foreground, noArray());
 
-	Mat imageROI = background(cv::Rect(0, 0, alpha.cols, alpha.rows));
+	Mat imageROI = background(cv::Rect(location[0], location[1], alpha.cols, alpha.rows));
 	//255 - alpha
 	bitwise_not(alpha, alpha, noArray());
 
