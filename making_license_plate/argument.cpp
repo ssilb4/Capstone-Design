@@ -1,7 +1,15 @@
 #include "makexml.h"
 
-Mat argument(Mat input, int x[], int y[])
+Mat argument(Mat input, int x[], int y[], int result_x[], int result_y[])
 {
+	//ëœë¤
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::mt19937_64 ranNum(seed);
+	int one_X = ranNum() % (input.cols/2) , one_Y = ranNum() % (input.rows / 2), 
+		two_X = ranNum() % (input.cols / 2), two_Y = ranNum() % (input.rows / 2), 
+		three_X = ranNum() % (input.cols / 2), three_Y = ranNum() % (input.rows / 2), 
+		four_X = ranNum() % (input.cols / 2), four_Y = ranNum() % (input.rows / 2);
+
 	// Input Quadilateral or Image plane coordinates
 	Point2f inputQuad[4];
 	// Output Quadilateral or World plane coordinates
@@ -18,12 +26,15 @@ Mat argument(Mat input, int x[], int y[])
 
 	// The 4 points that select quadilateral on the input , from top-left in clockwise order
 	// These four pts are the sides of the rect box used as input 
-	//¿À¸¥ÂÊ -, ¿ŞÂÊ +, ¾Æ·¡°¡ - À§°¡ +
-	int minX = -300, maxX = 300, minY = -150, maxY = 150;
-	inputQuad[0] = Point2f(minX, minY);
-	inputQuad[1] = Point2f(input.cols + maxX, -maxY);
-	inputQuad[2] = Point2f(input.cols + maxX, input.rows + minY);
-	inputQuad[3] = Point2f(minX, input.rows + maxY);
+	/*
+	ì™¼ìª½ì—ì„œ ë³¼ ê²½ìš°
+	ì˜¤ë¥¸ìª½ì—ì„œ ë³¼ ê²½ìš°
+	ìœ„ì—ì„œ ë³¼ ê²½ìš°
+	*/
+	inputQuad[0] = Point2f(-one_X, -one_Y);
+	inputQuad[1] = Point2f(input.cols + two_X, -two_Y);
+	inputQuad[2] = Point2f(input.cols + three_X, input.rows + three_Y);
+	inputQuad[3] = Point2f(-four_X, input.rows + four_Y);
 	// The 4 points where the mapping is to be done , from top-left in clockwise order
 	outputQuad[0] = Point2f(0, 0);
 	outputQuad[1] = Point2f(input.cols - 1, 0);
@@ -31,8 +42,9 @@ Mat argument(Mat input, int x[], int y[])
 	outputQuad[3] = Point2f(0, input.rows - 1);
 
 	// Get the Perspective Transform Matrix i.e. lambda 
+	//lambda = getPerspectiveTransform(inputQuad, outputQuad);
 	lambda = getPerspectiveTransform(inputQuad, outputQuad);
-	cout << lambda;
+	//cout << lambda;
 	lambda.at<double>(0, 0);
 
 	int xmin = 999999, ymin = 9999999, xmax = 0, ymax = 0;
@@ -50,10 +62,10 @@ Mat argument(Mat input, int x[], int y[])
 			if (ry < ymin) ymin = int(ry);
 		}
 	}
-	x[0] = xmin;
-	x[1] = xmax;
-	y[0] = ymin;
-	y[1] = ymax;
+	result_x[0] = xmin;
+	result_x[1] = xmax;
+	result_y[0] = ymin;
+	result_y[1] = ymax;
 	//cout << rx << " " << ry << endl;
 	// Apply the Perspective Transform just found to the src image
 	warpPerspective(input, output, lambda, output.size());
