@@ -169,6 +169,12 @@ int main()
 
 		dst3 = alpha(car_image, dst3, mask_image, car_location);
 		dst3 = gaussian(dst3);
+		
+		plate_x[0] += car_location[0];
+		plate_x[1] += car_location[0];
+		plate_y[0] += car_location[1];
+		plate_y[1] += car_location[1];
+		
 		dst3 = argument(dst3, plate_x, plate_y, result_x, result_y);
 
 		makexml(result_directory, result_name, imgtype, "1", background_image.cols, background_image.rows, result_x[0], result_x[1], result_y[0], result_y[1]);
